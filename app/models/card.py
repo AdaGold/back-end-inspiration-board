@@ -29,5 +29,7 @@ class Card(db.Model):
     
     @staticmethod
     def from_json(card_json):
-        return Card(messasge=card_json["message"], likes_count=card_json["likes_count"])
+        return Card(message=card_json["message"])
+        
+        #likes_count=card_json["likes_count"])
     

@@ -4,12 +4,13 @@ from .models.card import Card
 from .models.board import Board
 
 # example_bp = Blueprint('example_bp', __name__)
-card_bp = Blueprint("board/<board_id>/cards", __name__, url_prefix="board/<board_id>/cards")
+card_bp = Blueprint("/board/<board_id>/cards", __name__, url_prefix="/board/<board_id>/cards")
 
 @card_bp.route("", methods=["POST"], strict_slashes=False)
 def create_a_card(board_id):
     
     board = Board.query.get(board_id)
+    print(f"##### {board_id} #####")
     
     if not board or board == None:
         return jsonify(""), 404 
@@ -19,11 +20,11 @@ def create_a_card(board_id):
     if "message" not in request_body:
         return jsonify(details="invalid data"), 400
     
-    new_card = Card.from_json(request_body)
-    
+    #new_card = Card.from_json(request_body)
+    new_card  = Card(message = request_body["message"])
     db.session.add(new_card)
     db.session.commit()
-    return new_card.to_json_card(), 201
+    return jsonify(new_card), 201
 
 
 @card_bp.route("", methods=["GET"], strict_slashes=False)
