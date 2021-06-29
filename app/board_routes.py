@@ -13,6 +13,14 @@ def all_boards():
         board_response.append(one_board.get_return())
     return jsonify(board_response)
 
+@board_bp.route("/<board_id>", methods=["GET"])
+def select_board(board_id):
+    board = Board.query.get(board_id)
+    if board == None:
+        return jsonify({"Error": "Board is not found"}, 404)
+    else:
+        return make_response(board.get_return(), 200)
+
 @board_bp.route("", methods=["POST"])
 def create_board():
     request_body = request.get_json()
@@ -30,7 +38,7 @@ def delete_all_boards():
     boards = Board.query.all()
     db.session.delete(boards)
     db.session.commit()
-    return make_response({
+    return jsonify({
         "Success": "All boards are deleted"}, 200)
 
     # boards = Board.query.all()
