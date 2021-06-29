@@ -9,5 +9,6 @@ class Board(db.Model):
     def get_return(self):
         return{
                     "board_id": self.board_id,
-                    "title": self.title,   
+                    "title": self.title,
+                    "owner": self.owner
                 }
