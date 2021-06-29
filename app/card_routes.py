@@ -15,16 +15,15 @@ def create_a_card(board_id):
     if not board or board == None:
         return jsonify(""), 404 
    
-    request_body = request.get.json()
+    request_body = request.get_json()
 
     if "message" not in request_body:
         return jsonify(details="invalid data"), 400
     
-    #new_card = Card.from_json(request_body)
-    new_card  = Card(message = request_body["message"])
+    new_card  = Card.from_json(request_body)
     db.session.add(new_card)
     db.session.commit()
-    return jsonify(new_card), 201
+    return make_response(new_card.to_json(), 201)
 
 
 @card_bp.route("", methods=["GET"], strict_slashes=False)
@@ -32,10 +31,14 @@ def get_all_cards(board_id):
     
     board = Board.query.get(board_id)
     
+    print(f"get_all_cards(): Board = {board}")
+    
     if not board or board == None:
         return jsonify(""), 404 
     
     cards_list = []
+    
+    print(f"get_all_cards(): board.cards = {board.cards}")
     
     for card in board.cards:
         card_data = Card.query.get(card.card_id)

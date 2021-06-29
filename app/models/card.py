@@ -20,7 +20,7 @@ class Card(db.Model):
     #                } 
     #     }
     
-    def to_json_no_key(self):
+    def to_json(self):
        return  {    "card_id" :self.card_id,
                     "board_id": self.board_id,
                     "message": self.message,
@@ -29,7 +29,18 @@ class Card(db.Model):
     
     @staticmethod
     def from_json(card_json):
-        return Card(message=card_json["message"])
+        new_card = Card()
+        
+        if ("message" in card_json):
+            new_card.message = card_json["message"]
+        
+        if ("board_id" in card_json):
+            new_card.board_id = card_json["board_id"]
+        
+        if ("likes_count" in card_json):
+            new_card.likes_count = card_json["likes_count"]
+        
+        return new_card
         
         #likes_count=card_json["likes_count"])
     
