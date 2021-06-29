@@ -9,6 +9,7 @@ def delete_card(card_id):
     card = Card.query.get_or_404(card_id)
     db.session.delete(card)
     db.session.commit()
+
     return make_response(f"Card #{card.card_id} successfully deleted", 200)
 
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
@@ -17,4 +18,5 @@ def update_card(card_id):
     form_data = request.get_json()
     card.likes_count = form_data["likes_count"]
     db.session.commit()
+    
     return make_response(f"Card #{card.card_id} successfully updated", 200)
