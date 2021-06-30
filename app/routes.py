@@ -14,44 +14,38 @@ boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
 
-# @boards_bp.route("", methods=["GET"], strict_slashes=False)
-# def boards_index():
+@boards_bp.route("", methods=["GET"], strict_slashes=False)
+def boards_index():
     
-#     boards = Board.query.all()
-#     boards_response = []
+    boards = Board.query.all()
+    boards_response = []
     
-#     if boards is None:
-#         return jsonify(boards_response), 200
+    if boards is None:
+        return jsonify(boards_response), 200
 
-#     else:
-#         for board in boards:
-#             boards_response.append({
-#                 "id": board.board_id,
-#                 "name": board.name,
-#                 "registered_at": board.register_at,
-#                 "postal_code": board.postal_code,
-#                 "phone": board.phone,
-#                 "cards_checked_out_count": 0
-#             })
-#         return jsonify(boards_response), 200
+    else:
+        for board in boards:
+            boards_response.append({
+                "id": board.board_id,
+                "title": board.title,
+                "owner": board.owner
+            })
+        return jsonify(boards_response), 200
 
 
-# @boards_bp.route("/<board_id>", methods=["GET"], strict_slashes=False)
-# def handle_single_board(board_id):
+@boards_bp.route("/<board_id>", methods=["GET"], strict_slashes=False)
+def handle_single_board(board_id):
 
-#     board = Board.query.get(board_id)
+    board = Board.query.get(board_id)
 
-#     if board is None:
-#         return jsonify(f"board {board_id} doesn't exist."), 404
+    if board is None:
+        return jsonify(f"board {board_id} doesn't exist."), 404
     
-#     else:
-#         return jsonify({"id": board.board_id,
-#                     "name": board.name,
-#                     "registered_at": board.register_at,
-#                     "postal_code": board.postal_code,
-#                     "phone": board.phone,
-#                     "cards_checked_out_count": 0
-#                 }), 200
+    else:
+        return jsonify({"id": board.board_id,
+                    "title": board.title,
+                    "owner": board.owner
+                }), 200
 
 
 @boards_bp.route("", methods=["POST"], strict_slashes=False)
@@ -67,7 +61,7 @@ def handle_boards():
     db.session.add(new_board)
     db.session.commit()
 
-    return jsonify({"id": new_board.id}), 201
+    return jsonify({"id": new_board.board_id}), 201
 
 
 # @boards_bp.route("/<board_id>", methods=["PUT"], strict_slashes=False)
@@ -202,3 +196,20 @@ def handle_boards():
 #     db.session.commit()
 
 #     return jsonify({"id": card.card_id}), 200
+
+# @goals_bp.route("/<goal_id>/tasks", methods=["POST"], strict_slashes=False)
+# def handle_goals_tasks(goal_id):
+#     request_body = request.get_json()
+    
+#     goal = Goal.query.get_or_404(goal_id)
+
+#     tasks = request_body["task_ids"]
+
+#     for task in tasks:
+#         task_to_update = Task.query.get(task) 
+#         task_to_update.goal_id = goal_id
+
+#     db.session.commit()
+
+#     return jsonify({"id": goal.goal_id,
+#         "task_ids": tasks}), 200
