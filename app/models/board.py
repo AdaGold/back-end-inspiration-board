@@ -1,8 +1,8 @@
 from app import db
 
 class Board(db.Model):
+    __tablename__ = "board"
     board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
     owner = db.Column(db.String)
     cards = db.relationship('Card', backref='board', lazy=True)
-    __tablename__ = "board"

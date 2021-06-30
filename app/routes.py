@@ -32,7 +32,7 @@ def boards_index():
             })
         return jsonify(boards_response), 200
 
-
+# add in relationship data that shows cards + messages etc.
 @boards_bp.route("/<board_id>", methods=["GET"], strict_slashes=False)
 def handle_single_board(board_id):
 
@@ -64,66 +64,6 @@ def handle_boards():
     return jsonify({"id": new_board.board_id}), 201
 
 
-# @boards_bp.route("/<board_id>", methods=["PUT"], strict_slashes=False)
-# def update_single_board(board_id):
-#     board = Board.query.get(board_id)
-#     request_body = request.get_json()
-    
-#     if board is None:
-#         return jsonify(f"board {board_id} doesn't exist."), 404
-    
-#     elif "name" not in request_body or "postal_code" not in request_body or "phone" not in request_body:
-#         return jsonify({"details": "Invalid data"}), 400
-
-#     else:
-#         board.name = request_body["name"]
-#         board.postal_code = request_body["postal_code"]
-#         board.phone = request_body["phone"]
-
-#         db.session.commit()
-
-#         return jsonify({"board": {
-#             "id": board.board_id,
-#             "name": board.name,
-#             "registered_at": board.register_at,
-#             "postal_code": board.postal_code,
-#             "phone": board.phone,
-#             "cards_checked_out": 0}}), 200
-
-
-# @boards_bp.route("/<board_id>", methods=["DELETE"], strict_slashes=False)
-# def delete_single_board(board_id):
-#     board = Board.query.get(board_id)
-    
-#     if board is None:
-#         return jsonify(f"board {board_id} doesn't exist."), 404
-    
-#     db.session.delete(board)
-#     db.session.commit()
-
-#     return jsonify({"id": board.board_id}), 200
-
-
-# @cards_bp.route("", methods=["GET"], strict_slashes=False)
-# def cards_index():
-    
-#     cards = Card.query.all()
-#     cards_response = []
-    
-#     if cards is None:
-#             return jsonify(cards_response), 200
-
-#     else:
-#         for card in cards:
-#             cards_response.append({
-#                 "id": card.card_id,
-#                 "title": card.title,
-#                 "release_date": card.release_date,
-#                 "total_inventory": card.total_inventory,
-#                 "available_inventory": 0})
-#         return jsonify(cards_response), 200
-
-
 # @cards_bp.route("/<card_id>", methods=["GET"], strict_slashes=False)
 # def handle_single_card(card_id):
 
@@ -139,63 +79,57 @@ def handle_boards():
 #         "total_inventory": card.total_inventory,
 #         "available_inventory": 0}), 200
 
+# change to post card to a board
 
-# @cards_bp.route("", methods=["POST"], strict_slashes=False)
-# def handle_cards():
+# @goals_bp.route("/<goal_id>/tasks", methods=["POST"], strict_slashes=False)
+# def handle_goals_tasks(goal_id):
 #     request_body = request.get_json()
     
-#     if "title" not in request_body or "release_date" not in request_body or "total_inventory" not in request_body:
-#         return jsonify({"details": "Invalid data"}), 400
-    
-#     new_card = Card(title= request_body["title"], 
-#         release_date= request_body["release_date"],
-#         total_inventory= request_body["total_inventory"])
+#     goal = Goal.query.get_or_404(goal_id)
 
-#     db.session.add(new_card)
-#     db.session.commit()
+#     tasks = request_body["task_ids"]
 
-#     return jsonify({"id": new_card.card_id,
-#         "title": new_card.title,
-#         "release_date": new_card.release_date,
-#         "total_inventory": new_card.total_inventory,
-#         "available_inventory": 0}), 201
-
-
-# @cards_bp.route("/<card_id>", methods=["PUT"], strict_slashes=False)
-# def update_single_card(card_id):
-#     card = Card.query.get(card_id)
-#     request_body = request.get_json()
-
-#     if card is None:
-#         return jsonify(f"board {card_id} doesn't exist."), 404
-    
-#     elif "title" not in request_body or "release_date" not in request_body or "total_inventory" not in request_body:
-#         return jsonify({"details": "Invalid data"}), 400
-
-#     card.title = request_body["title"]
-#     card.release_date= request_body["release_date"]
-#     card.total_inventory= request_body["total_inventory"]
+#     for task in tasks:
+#         task_to_update = Task.query.get(task) 
+#         task_to_update.goal_id = goal_id
 
 #     db.session.commit()
 
-#     return jsonify({"id": card.card_id,
-#         "title": card.title,
-#         "release_date": card.release_date,
-#         "total_inventory": card.total_inventory,
-#         "available_inventory": 0}), 200
+#     return jsonify({"id": goal.goal_id,
+#         "task_ids": tasks}), 200
 
-
-# @cards_bp.route("/<card_id>", methods=["DELETE"], strict_slashes=False)
-# def delete_single_card(card_id):
-#     card = Card.query.get(card_id)
+@cards_bp.route("</board_id>/cards", methods=["POST"], strict_slashes=False)
+def handle_cards(board_id):
+    request_body = request.get_json()
     
-#     if card is None:
-#         return jsonify(f"board {card_id} doesn't exist."), 404
-    
-#     db.session.delete(card)
-#     db.session.commit()
+    board = Board.query.get_or_404(board_id)
 
-#     return jsonify({"id": card.card_id}), 200
+    if "message" not in request_body:
+        return jsonify({"details": "Invalid data"}), 400
+
+    elif len(request_body["message"]) > 40:
+        return jsonify({"details": "message must be less than 40 characters."}), 400
+        
+    new_card = Card(message= request_body["message"])
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return jsonify({"id": new_card.card_id,
+        "message": new_card.message}), 201
+
+
+@cards_bp.route("/<card_id>", methods=["DELETE"], strict_slashes=False)
+def delete_single_card(card_id):
+    card = Card.query.get(card_id)
+    
+    if card is None:
+        return jsonify(f"card {card_id} doesn't exist."), 404
+    
+    db.session.delete(card)
+    db.session.commit()
+
+    return jsonify(f"id: {card_id} has been deleted."), 200
 
 # @goals_bp.route("/<goal_id>/tasks", methods=["POST"], strict_slashes=False)
 # def handle_goals_tasks(goal_id):
