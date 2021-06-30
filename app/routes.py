@@ -49,23 +49,6 @@ def handle_boards():
     return jsonify({"id": new_board.board_id}), 201
 
 
-# @cards_bp.route("/<card_id>", methods=["GET"], strict_slashes=False)
-# def handle_single_card(card_id):
-
-#     card = Card.query.get(card_id)
-    
-#     if card is None:
-#         return jsonify(f"board {card_id} doesn't exist."), 404
-    
-#     return jsonify({
-#         "id": card.card_id,
-#         "title": card.title,
-#         "release_date": card.release_date,
-#         "total_inventory": card.total_inventory,
-#         "available_inventory": 0}), 200
-
-
-# add in relationship data that shows cards + messages etc.
 @boards_bp.route("/<board_id>/cards", methods=["GET"], strict_slashes=False)
 def handle_single_board(board_id):
 
@@ -125,20 +108,3 @@ def delete_single_card(card_id):
     db.session.commit()
 
     return jsonify(f"id: {card_id} has been deleted."), 200
-
-# @goals_bp.route("/<goal_id>/tasks", methods=["POST"], strict_slashes=False)
-# def handle_goals_tasks(goal_id):
-#     request_body = request.get_json()
-    
-#     goal = Goal.query.get_or_404(goal_id)
-
-#     tasks = request_body["task_ids"]
-
-#     for task in tasks:
-#         task_to_update = Task.query.get(task) 
-#         task_to_update.goal_id = goal_id
-
-#     db.session.commit()
-
-#     return jsonify({"id": goal.goal_id,
-#         "task_ids": tasks}), 200
