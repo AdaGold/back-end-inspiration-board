@@ -21,7 +21,12 @@ def create_a_card(board_id):
         return jsonify(details="invalid data"), 400
     
     new_card  = Card.from_json(request_body)
+    new_card.board_id = board_id
+    
+    print(f"create_a_card card.boardId: {new_card.board_id}")
+    
     db.session.add(new_card)
+    db.session.add(board)
     db.session.commit()
     return make_response(new_card.to_json(), 201)
 
@@ -38,17 +43,19 @@ def get_all_cards(board_id):
     
     cards_list = []
     
-    print(f"get_all_cards(): board.cards = {board.cards}")
+    board_cards = board.cards
+    
+    print(f"get_all_cards(): board.cards = {board_cards}")
     
     for card in board.cards:
         card_data = Card.query.get(card.card_id)
-        cards_list.append(card_data)
+        cards_list.append(card_data.to_json())
     
-    return jsonify(cards_list), 200         
+    return make_response(jsonify(cards_list), 200)         
 
 
 @card_bp.route("<card_id>", methods=["DELETE"], strict_slashes=False)
-def delete_a_card(card_id):
+def delete_a_card(board_id, card_id):
 
     card = Card.query.get(card_id)
 
@@ -63,19 +70,15 @@ def delete_a_card(card_id):
 
 
 @card_bp.route("<card_id>", methods=["PUT"], strict_slashes=False)
-def like_a_card(card_id):
+def like_a_card(board_id, card_id):
     card = Card.query.get(card_id)
 
     if card == None:
         return Response("",status=404)
     
-    form_data = request.get_json()
-    
-    if not form_data or not form_data["message"] or not form_data["likes_count"]:
-        return Response("", 400)
-    
     card.likes_count += 1
     
+    db.session.add(card)
     db.session.commit()
     
-    return card.to_json_no_key(), 200
+    return card.to_json(), 200
