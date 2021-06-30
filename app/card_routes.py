@@ -17,7 +17,10 @@ def create_a_card(board_id):
    
     request_body = request.get_json()
 
-    if "message" not in request_body:
+    if len(request_body["message"]) > 40:
+        return jsonify(details="character limit exeeded"), 400
+    
+    if "message" not in request_body or len(request_body["message"]) == 0:
         return jsonify(details="invalid data"), 400
     
     new_card  = Card.from_json(request_body)
