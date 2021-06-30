@@ -32,21 +32,6 @@ def boards_index():
             })
         return jsonify(boards_response), 200
 
-# add in relationship data that shows cards + messages etc.
-@boards_bp.route("/<board_id>", methods=["GET"], strict_slashes=False)
-def handle_single_board(board_id):
-
-    board = Board.query.get(board_id)
-
-    if board is None:
-        return jsonify(f"board {board_id} doesn't exist."), 404
-    
-    else:
-        return jsonify({"id": board.board_id,
-                    "title": board.title,
-                    "owner": board.owner
-                }), 200
-
 
 @boards_bp.route("", methods=["POST"], strict_slashes=False)
 def handle_boards():
@@ -79,27 +64,36 @@ def handle_boards():
 #         "total_inventory": card.total_inventory,
 #         "available_inventory": 0}), 200
 
-# change to post card to a board
 
-# @goals_bp.route("/<goal_id>/tasks", methods=["POST"], strict_slashes=False)
-# def handle_goals_tasks(goal_id):
-#     request_body = request.get_json()
+# add in relationship data that shows cards + messages etc.
+@boards_bp.route("/<board_id>/cards", methods=["GET"], strict_slashes=False)
+def handle_single_board(board_id):
+
+    board = Board.query.get(board_id)
+    cards = board.cards
+    print(cards)
+
+    if board is None:
+        return jsonify(f"board {board_id} doesn't exist."), 404
     
-#     goal = Goal.query.get_or_404(goal_id)
+    else:
+        board_cards = []
+    
+        for card in cards:
+            board_cards.append({"id": card.card_id,
+            "message": card.message, 
+            "likes": card.likes_count
+            })
+    
+        return jsonify({"id": board.board_id,
+                    "title": board.title,
+                    "owner": board.owner,
+                    "cards": board_cards
+                }), 200
 
-#     tasks = request_body["task_ids"]
 
-#     for task in tasks:
-#         task_to_update = Task.query.get(task) 
-#         task_to_update.goal_id = goal_id
-
-#     db.session.commit()
-
-#     return jsonify({"id": goal.goal_id,
-#         "task_ids": tasks}), 200
-
-@cards_bp.route("</board_id>/cards", methods=["POST"], strict_slashes=False)
-def handle_cards(board_id):
+@boards_bp.route("<board_id>/cards", methods=["POST"], strict_slashes=False)
+def handle_board_cards(board_id):
     request_body = request.get_json()
     
     board = Board.query.get_or_404(board_id)
@@ -110,7 +104,8 @@ def handle_cards(board_id):
     elif len(request_body["message"]) > 40:
         return jsonify({"details": "message must be less than 40 characters."}), 400
         
-    new_card = Card(message= request_body["message"])
+    new_card = Card(message= request_body["message"],
+    board_id= board_id)
 
     db.session.add(new_card)
     db.session.commit()
