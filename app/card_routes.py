@@ -10,7 +10,7 @@ card_bp = Blueprint("/board/<board_id>/cards", __name__, url_prefix="/board/<boa
 def create_a_card(board_id):
     
     board = Board.query.get(board_id)
-    print(f"##### {board_id} #####")
+    #print(f"##### {board_id} #####")
     
     if not board or board == None:
         return jsonify(""), 404 
@@ -23,7 +23,7 @@ def create_a_card(board_id):
     new_card  = Card.from_json(request_body)
     new_card.board_id = board_id
     
-    print(f"create_a_card card.boardId: {new_card.board_id}")
+    #print(f"create_a_card card.boardId: {new_card.board_id}")
     
     db.session.add(new_card)
     db.session.add(board)
@@ -36,7 +36,7 @@ def get_all_cards(board_id):
     
     board = Board.query.get(board_id)
     
-    print(f"get_all_cards(): Board = {board}")
+    #print(f"get_all_cards(): Board = {board}")
     
     if not board or board == None:
         return jsonify(""), 404 
@@ -45,7 +45,7 @@ def get_all_cards(board_id):
     
     board_cards = board.cards
     
-    print(f"get_all_cards(): board.cards = {board_cards}")
+    #print(f"get_all_cards(): board.cards = {board_cards}")
     
     for card in board.cards:
         card_data = Card.query.get(card.card_id)
