@@ -34,10 +34,10 @@ def create_board():
     db.session.commit()
     return jsonify({"Success": f'Board "{new_board.title}" is created'}), 201
 
-@board_bp.route("", methods=["DELETE"])
-def delete_all_boards():
-    boards = Board.query.all()
-    db.session.delete(boards)
+@board_bp.route("/<board_id>", methods=["DELETE"])
+def delete_one_board(board_id):
+    board = Board.query.get(board_id)
+    db.session.delete(board)
     db.session.commit()
     return jsonify({
         "Success": "All boards are deleted"}, 200)
