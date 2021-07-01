@@ -108,3 +108,15 @@ def delete_single_card(card_id):
     db.session.commit()
 
     return jsonify(f"id: {card_id} has been deleted."), 200
+
+
+@cards_bp.route("<card_id>", methods=["PUT"], strict_slashes=False)
+def handle_likes_count(card_id):
+    
+    card = Card.query.get(card_id)
+    
+    card.likes_count += 1
+    
+    db.session.commit()
+    
+    return jsonify({"likes_count": card.likes_count}), 200
