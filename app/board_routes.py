@@ -41,7 +41,7 @@ def delete_one_board(board_id):
     db.session.commit()
     return jsonify({
         "Success": "All boards are deleted"}, 200)
-
+# testing testing 
     # boards = Board.query.all()
     # cards = Card.query.all() ///????
     # db.session.delete(boards)
