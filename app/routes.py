@@ -13,6 +13,10 @@ import json
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
+def post_message_to_slack(text, blocks=None):
+    requests.post('https://slack.com/api/chat.postMessage',
+    headers={'Authorization': f"Bearer {os.environ.get('SLACK_BOT_TOKEN')}"},
+    data={'channel': f"{os.environ.get('SLACK_CHANNEL')}", 'text': text})
 
 @boards_bp.route("", methods=["GET"], strict_slashes=False)
 def boards_index():
@@ -44,7 +48,7 @@ def handle_boards():
     owner= request_body["owner"])
 
     db.session.add(new_board)
-    db.session.commit()
+    db.session.commit("id": new_board.title)
 
     return jsonify({"id": new_board.board_id}), 201
 
@@ -92,6 +96,9 @@ def handle_board_cards(board_id):
 
     db.session.add(new_card)
     db.session.commit()
+
+    post_message = f"A new card has been created on board #{board_id} with the following message: {new_card.message}."
+    post_message_to_slack(post_message)
 
     return jsonify({"id": new_card.card_id,
         "message": new_card.message}), 201
