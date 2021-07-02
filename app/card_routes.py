@@ -4,18 +4,30 @@ from .models.card import Card
 from .models.board import Board
 from sqlalchemy import desc, asc
 
+import requests
+from app import slack_token 
+
 # example_bp = Blueprint('example_bp', __name__)
 card_bp = Blueprint("/board/<board_id>/cards", __name__, url_prefix="/board/<board_id>/cards")
 
 @card_bp.route("", methods=["POST"], strict_slashes=False)
 def create_a_card(board_id):
+    url = "https://slack.com/api/chat.postMessage?channel=mags&text=hi&pretty=1"
+    data = {
+        "channel" : "C0275FT6HMW",
+        "text": ("Someone just added a card 🤩")
+    }
+    headers = {
+        "Authorization": slack_token
+    }
+    connect = requests.post(url, data=data, headers=headers)
     
     board = Board.query.get(board_id)
     #print(f"##### {board_id} #####")
     
     if not board or board == None:
         return jsonify(""), 404 
-   
+
     request_body = request.get_json()
 
     if len(request_body["message"]) > 40:
