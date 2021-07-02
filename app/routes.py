@@ -48,9 +48,9 @@ def handle_boards():
     owner= request_body["owner"])
 
     db.session.add(new_board)
-    db.session.commit("id": new_board.title)
+    db.session.commit()
 
-    return jsonify({"id": new_board.board_id}), 201
+    return jsonify({"id": new_board.title}), 201
 
 
 @boards_bp.route("/<board_id>/cards", methods=["GET"], strict_slashes=False)
