@@ -25,6 +25,3 @@ def create_app(test_config=None):
     from app.models.card import Card
 
     return app
-
-    
-    
