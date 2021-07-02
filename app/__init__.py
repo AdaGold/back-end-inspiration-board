@@ -9,6 +9,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 load_dotenv()
 
+slack_token = os.environ.get("TOKEN")
 
 def create_app():
     app = Flask(__name__)

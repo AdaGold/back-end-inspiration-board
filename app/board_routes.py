@@ -3,6 +3,7 @@ from app import db
 from app.models.board import Board
 from .models.card import Card
 
+
 # bp route for board
 board_bp = Blueprint("board", __name__, url_prefix="/board")
 
