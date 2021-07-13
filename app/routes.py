@@ -26,9 +26,9 @@ def handle_boards():
             })
         return jsonify(boards_response)
     elif request.method == "POST":
-        request_body = request.get_json(force=True)
-        if "title" or "owner" not in request_body:
-            return {"details": "Invalid data"}, 400
+        request_body = request.get_json()
+        title = request_body.get("title")
+        owner = request_body.get("owner")
         new_board = Board(title=request_body["title"],
                           owner=request_body["owner"])
 
@@ -46,9 +46,10 @@ def handle_board(board_id):
         if board == None:
             return make_response("That board does not exist", 404)
         return {
-            "id": board.id,
+            "id": board.board_id,
             "title": board.title,
-            "owner": board.owner
+            "owner": board.owner,
+            "cards": board.cards
         }
     elif request.method == "PUT":
         if board == None:
@@ -69,3 +70,40 @@ def handle_board(board_id):
         db.session.commit()
         return make_response(f"Board: {board.title} sucessfully deleted.")
 # example_bp = Blueprint('example_bp', __name__)
+
+
+@boards_bp.route("/<board_id>/cards", methods=["POST", "GET"])
+def handle_cards(board_id):
+    board = Board.query.get(board_id)
+
+    if board is None:
+        return make_response("", 404)
+
+    if request.method == "GET":
+        cards = Board.query.get(board_id).cards
+        cards_response = []
+        for card in cards:
+            cards_response.append({
+                "message": card.message
+            })
+
+        return make_response(
+            {
+                "cards": cards_response
+            }, 200)
+    elif request.method == "POST":
+        request_body = request.get_json()
+        if 'message' not in request_body:
+            return {"details": "Invalid data"}, 400
+        new_card = Card(message=request_body["message"],
+                        board_id=board_id)
+
+        db.session.add(new_card)
+        db.session.commit()
+
+        return {
+            "card": {
+                "id": new_card.card_id,
+                "message": new_card.message
+            }
+        }, 201
