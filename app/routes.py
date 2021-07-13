@@ -43,7 +43,7 @@ def handle_board(board_id):
         if board == None:
             return make_response("That board does not exist", 404)
         return {
-            "id": board.id,
+            "id": board.board_id,
             "title": board.title,
             "owner": board.owner
         }
