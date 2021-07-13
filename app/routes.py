@@ -10,7 +10,6 @@ load_dotenv()
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
-# example_bp = Blueprint('example_bp', __name__)
 @boards_bp.route("", methods=["GET", "POST"])
 def handle_boards():
     if request.method == "GET":
@@ -44,3 +43,24 @@ def handle_boards():
                 "title": new_board.title,
             }
         }, 201)
+
+# needed to delete boards to test functionality.
+# We don't need to keep this production.s
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def handle_board(board_id):
+    board = Board.query.get(board_id)
+    print('board ---> ', board)
+
+    if request.method == "DELETE":
+        if board is None:
+            return make_response(f"Board {board_id} not found. ", 404)
+
+        db.session.delete(board)
+        db.session.commit()
+
+        return make_response(
+                {
+                "details":
+                    f"Board: {board.board_id} with title: {board.title}. Successfully deleted"
+                }
+        )
