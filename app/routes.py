@@ -35,4 +35,34 @@ def handle_boards():
 
     return make_response(f"Board {new_board.title} successfully created", 201)
 
+@boards_bp.route("/<board_id>", methods=["GET", "PUT", "DELETE"])
+def handle_board(board_id):
+    board = Board.query.get(board_id)
+    
+    if request.method == "GET":
+        if board == None:
+            return make_response("That board does not exist", 404)
+        return {
+            "id": board.id,
+            "title": board.title,
+            "owner": board.owner
+        }
+    elif request.method == "PUT":
+        if board == None:
+            return make_response("Board does not exist", 404)
+        form_data = request.get_json()
+        
+        board.title = form_data["title"]
+        board.owner = form_data["owner"]
+        
+        db.session.commit()
+        
+        return make_response(f"Board: {board.title} sucessfully updated.")
+    
+    elif request.method == "DELETE":
+        if board == None:
+            return make_response("Board does not exist", 404)
+        db.session.delete(board)
+        db.session.commit()
+        return make_response(f"Board: {board.title} sucessfully deleted.")
 # example_bp = Blueprint('example_bp', __name__)
