@@ -25,3 +25,22 @@ def handle_boards():
             })
         print('we are in the get request')
         return make_response(jsonify(boards_response), 200)
+    elif request.method == "POST":
+        request_body = request.get_json()
+        if "title" not in request_body or "owner" not in request_body:
+            return {
+                "details": f"Invalid data"
+            }, 400
+        new_board = Board(
+            title=request_body["title"],
+            owner=request_body["owner"]
+        )
+        db.session.add(new_board)
+        db.session.commit()
+
+        return make_response({
+            "board": {
+                "id": new_board.board_id,
+                "title": new_board.title,
+            }
+        }, 201)
