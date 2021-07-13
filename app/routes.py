@@ -127,3 +127,22 @@ def handle_board_cards(board_id):
             "owner": board.owner,
             "cards": list_of_cards
         })
+
+# deleting DELETE /cards/<card_id>
+
+@cards_bp.route("/<card_id>", methods=["DELETE"])
+def handle_card(card_id):
+    card = Card.query.get(card_id)
+
+    if card is None:
+        return make_response(f"Card #{card_id} not found.", 404)
+
+    if request.method == "DELETE":
+        db.session.delete(card)
+        db.session.commit()
+
+        return make_response(
+            {
+                "details": f"Card at card_id: {card.card_id}. Successfully deleted"
+            }
+        )
