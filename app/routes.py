@@ -28,7 +28,7 @@ def handle_boards():
         title = request_body.get("title")
         owner = request_body.get("owner")
         new_board = Board(title=request_body["title"],
-                          owner=request_body["owner"])
+                        owner=request_body["owner"])
         
         db.session.add(new_board)
         db.session.commit()
