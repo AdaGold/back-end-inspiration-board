@@ -133,3 +133,13 @@ def handle_cards(board_id):
                 "message": new_card.message
             }
         }, 201
+
+@boards_bp.route("/<board_id>/<card_id>", methods=["DELETE"])
+def handle_card(board_id, card_id):
+    card = Card.query.get_or_404(card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return make_response(
+        f"Card Message: {card.message} Card ID: {card.card_id} deleted successfully")
