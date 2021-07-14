@@ -201,3 +201,21 @@ def handle_card(card_id):
             }
         })
 
+# ----------------- Increase Card Likes ----------------- #
+@cards_bp.route("/<card_id>/like", methods=["PUT"])
+def handle_likes(card_id):
+    card = Card.query.get(card_id)
+
+    if card is None:
+        return make_response({
+            f"Card #{card_id} not found."
+        }, 404)
+
+    if request.method == "PUT":
+
+        card.likes_count += 1
+        db.session.commit()
+
+        return make_response(
+            {"likes_count": card.likes_count}
+        ), 200
