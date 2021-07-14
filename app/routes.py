@@ -85,7 +85,7 @@ def get_all_cards_by_board(board_id):
         return make_response("", 404)
 
     if request.method == "GET":
-        cards = Card.query.filter(Card.board_id == board_id).order_by(Card.card_id.asc())
+        cards = Card.query.filter(Card.board_id == board_id).order_by(Card.card_id.desc())
         results = []
         for card in cards:
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", card.card_id)
