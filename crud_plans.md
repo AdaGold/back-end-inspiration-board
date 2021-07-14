@@ -1,5 +1,6 @@
 # Must Ensure the following CRUD paths work:
 ~~- [ ] GET /boards~~
+
 ~~- [ ] POST /boards~~
 
 - [ ] GET /boards/<board_id>/cards
@@ -34,7 +35,7 @@ As a client, I want to be able to make a `GET` request to `/boards` when there i
 ]
 ```
 
-### 2. Create a Board: need to decide what could be valid..
+### 2. Create a Board: (invalid if title or owner not included)
 - [ ] POST /boards
 
 As a client, I want to be able to make a `POST` request to `/boards` with the following HTTP request body
@@ -62,11 +63,15 @@ and get this response:
 ```
 So that I know I succesfully created a Board that is saved in the databse.
 
-******this might need to change its shape. Since it seems possible to have a many to many relationship here****
+### 3. Get Boards: No saved Boards
+- [ ] GET /boards
 
-Question: There could be many boards with many cards...? If so, changes my models a bit. I think.
+As a client, I want to be able to make a `POST` request to `/boards` when there are zero saved tasks and get this response:
+`200 ok`
+```json
+[]
+```
 
-### Get Boards: No saved Boards
 
 ### Get one Board: one saved Board
 As a client, I want to be able to make a `GET` request to `/boards/1` when there is at least one saved board and get this response:
