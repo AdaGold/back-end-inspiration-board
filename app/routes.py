@@ -42,7 +42,7 @@ def handle_boards():
         title = request_body.get("title")
         owner = request_body.get("owner")
         new_board = Board(title=request_body["title"],
-                        owner=request_body["owner"])
+                          owner=request_body["owner"])
         
         db.session.add(new_board)
         db.session.commit()
@@ -59,7 +59,7 @@ def handle_board(board_id):
         return {
             "id": board.board_id,
             "title": board.title,
-            "owner": board.owner
+            "owner": board.owner,
         }
     elif request.method == "PUT":
         if board == None:
@@ -79,4 +79,4 @@ def handle_board(board_id):
         db.session.delete(board)
         db.session.commit()
         return make_response(f"Board: {board.title} sucessfully deleted.")
-# example_bp = Blueprint('example_bp', __name__)
+
