@@ -3,7 +3,6 @@ from app import db
 from .models.board import Board
 from .models.card import Card
 from dotenv import load_dotenv
-
 # example_bp = Blueprint('example_bp', __name__)
 load_dotenv()
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
@@ -86,9 +85,10 @@ def get_all_cards_by_board(board_id):
         return make_response("", 404)
 
     if request.method == "GET":
-        cards = Card.query.filter(Card.board_id == board_id)
+        cards = Card.query.filter(Card.board_id == board_id).order_by(Card.card_id.asc())
         results = []
         for card in cards:
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", card.card_id)
             results.append({
                 "id": card.card_id,
                 "message": card.message,
