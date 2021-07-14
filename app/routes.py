@@ -2,15 +2,30 @@ from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+import os
+from dotenv import load_dotenv
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 hello_world_bp = Blueprint("hello_world", __name__)
+
+
+load_dotenv()
 
 
 @hello_world_bp.route("/hello-world", methods=["GET"])
 def hello_world():
     my_beautiful_response_body = "Hello, World!"
     return my_beautiful_response_body
+
+# def post_message_to_slack(text):
+#     SLACK_TOKEN = os.environ.get('SLACKBOT_TOKEN')
+#     slack_path = "https://slack.com/api/chat.postMessage"
+#     query_params = {
+#         'channel': 'team-duck-yeah',
+#         'text': text
+#     }
+#     headers = {'Authorization': f"Bearer {SLACK_TOKEN}"}
+#     request.post(slack_path, params=query_params, headers=headers)
 
 
 @boards_bp.route("", methods=["GET", "POST"])
