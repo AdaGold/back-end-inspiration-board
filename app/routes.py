@@ -2,15 +2,34 @@ from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+import os
+from dotenv import load_dotenv
+import requests
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 hello_world_bp = Blueprint("hello_world", __name__)
+
+
+load_dotenv()
 
 
 @hello_world_bp.route("/hello-world", methods=["GET"])
 def hello_world():
     my_beautiful_response_body = "Hello, World!"
     return my_beautiful_response_body
+
+def post_message_to_slack(text):
+    SLACK_TOKEN = os.environ.get('SLACKBOT_TOKEN')
+    client = WebClient(token=SLACK_TOKEN)
+    try:
+        response = client.chat_postMessage(
+            channel='C0286U213J5',
+            text=text
+        )
+    except SlackApiError as e:
+        assert e.response["error"]
 
 
 @boards_bp.route("", methods=["GET", "POST"])
@@ -31,26 +50,30 @@ def handle_boards():
         owner = request_body.get("owner")
         new_board = Board(title=request_body["title"],
                           owner=request_body["owner"])
-
         db.session.add(new_board)
         db.session.commit()
+        slack_message = f"Some duck just added a new board!"
+        post_message_to_slack(slack_message)
 
     return make_response(f"Board {new_board.title} successfully created", 201)
 
 
 @boards_bp.route("/<board_id>", methods=["GET", "PUT", "DELETE"])
 def handle_board(board_id):
-    board = Board.query.get(board_id)
-
+    board = Board.query.get_or_404(board_id)
     if request.method == "GET":
-        if board == None:
-            return make_response("That board does not exist", 404)
-        return {
+        cards = []
+        for card in board.cards:
+            single_card = {
+                "message": card.message,
+            }
+            cards.append(single_card)
+        return make_response({
             "id": board.board_id,
             "title": board.title,
             "owner": board.owner,
-            "cards": board.cards
-        }
+            "cards": cards
+      })
     elif request.method == "PUT":
         if board == None:
             return make_response("Board does not exist", 404)
@@ -95,11 +118,14 @@ def handle_cards(board_id):
         request_body = request.get_json(force=True)
         if 'message' not in request_body:
             return {"details": "Invalid data"}, 400
+        
         new_card = Card(message=request_body["message"],
                         board_id=board_id)
 
         db.session.add(new_card)
         db.session.commit()
+        slack_message = f"Some duck just added a new card!"
+        post_message_to_slack(slack_message)
 
         return {
             "card": {
