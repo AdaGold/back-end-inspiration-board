@@ -60,17 +60,20 @@ def handle_boards():
 
 @boards_bp.route("/<board_id>", methods=["GET", "PUT", "DELETE"])
 def handle_board(board_id):
-    board = Board.query.get(board_id)
-
+    board = Board.query.get_or_404(board_id)
     if request.method == "GET":
-        if board == None:
-            return make_response("That board does not exist", 404)
-        return {
+        cards = []
+        for card in board.cards:
+            single_card = {
+                "message": card.message,
+            }
+            cards.append(single_card)
+        return make_response({
             "id": board.board_id,
             "title": board.title,
             "owner": board.owner,
-            #"cards": board.cards
-        }
+            "cards": cards
+      })
     elif request.method == "PUT":
         if board == None:
             return make_response("Board does not exist", 404)
