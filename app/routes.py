@@ -92,7 +92,7 @@ def handle_cards(board_id):
                 "cards": cards_response
             }, 200)
     elif request.method == "POST":
-        request_body = request.get_json()
+        request_body = request.get_json(force=True)
         if 'message' not in request_body:
             return {"details": "Invalid data"}, 400
         new_card = Card(message=request_body["message"],
@@ -107,3 +107,14 @@ def handle_cards(board_id):
                 "message": new_card.message
             }
         }, 201
+
+
+@boards_bp.route("/<board_id>/<card_id>", methods=["DELETE"])
+def handle_card(board_id, card_id):
+    card = Card.query.get_or_404(card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return make_response(
+        f"Card Message: {card.message} Card ID: {card.card_id} deleted successfully")
