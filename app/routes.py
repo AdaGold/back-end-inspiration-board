@@ -98,8 +98,12 @@ def handle_board(board_id):
         })
 
 
+# ----------------- Card Endpoints ----------------- #
+# Getting cards by board_id  --> done
+# Creating a card & associating it with a specific board --> done
 @boards_bp.route("/<board_id>/cards", methods=["GET", "POST"])
 def handle_board_cards(board_id):
+
     if request.method == "POST":
         board = Board.query.get(board_id)
 
@@ -154,9 +158,10 @@ def handle_board_cards(board_id):
             "cards": list_of_cards
         })
 
-# deleting DELETE /cards/<card_id>
-
-@cards_bp.route("/<card_id>", methods=["DELETE"])
+# Delete a card by ID --> done
+# Get card by ID --> done
+# Edit card by ID --> done
+@cards_bp.route("/<card_id>", methods=["DELETE", "GET", "PUT"])
 def handle_card(card_id):
     card = Card.query.get(card_id)
 
@@ -172,3 +177,27 @@ def handle_card(card_id):
                 "details": f"Card at card_id: {card.card_id}. Successfully deleted"
             }
         )
+
+    elif request.method == "GET":
+        return make_response({
+            "id": card.card_id,
+            "message": card.message,
+            "likes_count": card.likes_count,
+            "board_id": card.board_id
+        })
+
+    elif request.method == "PUT":
+        form_data = request.get_json()
+        card.message = form_data["message"]
+
+        db.session.commit()
+
+        return make_response({
+            "card": {
+                "id": card.card_id,
+                "message": card.message,
+                "likes_count": card.likes_count,
+                "board_id": card.board_id
+            }
+        })
+
