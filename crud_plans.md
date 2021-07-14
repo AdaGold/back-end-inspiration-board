@@ -1,168 +1,93 @@
-# Must Ensure the following CRUD paths work:
-~~- [ ] GET /boards~~
+# CRUD Operations for the Inspo Board backend API
+- You will need to replace the <board_id>s and <card_ids>s for your own usecases.
 
-~~- [ ] POST /boards~~
+# Handling Boards
+### Post --> Create a new Board
+- `/boards`
+- `https://inspo--board.herokuapp.com/boards`
 
-- [ ] GET /boards/<board_id>/cards
-- [ ] POST /boards/<board_id>/cards
-- [ ] DELETE /cards/<card_id>
-- [ ] PUT /cards/<card_id>/like
-
-
-### 1. Get Boards: Getting saved Boards
-- [ ] GET /boards
-
-As a client, I want to be able to make a `GET` request to `/boards` when there is at least one but possibly many saved boards and get this response:
-`200 ok`
-
-```json
-[
-    {
-        "board_id": 1,
-        "title": "Literary Quotes",
-        "owner": "Octavia Butler"
-    },
-    {
-        "board_id": 2,
-        "title": "Supreme Court Quotes",
-        "owner": "Ruth Bader Ginsburg"
-    },
-    {
-        "board_id": 3,
-        "title": "Jokes",
-        "owner": "Really Funny Person"
-    }
-]
-```
-
-### 2. Create a Board: (invalid if title or owner not included)
-- [ ] POST /boards
-
-As a client, I want to be able to make a `POST` request to `/boards` with the following HTTP request body
-
-
+Example Payload body:
 ```json
 {
-    "title": "Brand New Board",
-    "owner": "Marry Poppins"
+    "title": "Arizona",
+    "owner": "TrishTheDish"
 }
 ```
-
-and get this response:
-
-`201 CREATED`
-
-```json
-{
-    "board": {
-        "board_id": 1,
-        "title": "Brand New Board",
-        "owner": "Marry Poppins"
-    }
-}
-```
-So that I know I succesfully created a Board that is saved in the databse.
-
-### 3. Get Boards: No saved Boards
-- [ ] GET /boards
-
-As a client, I want to be able to make a `POST` request to `/boards` when there are zero saved tasks and get this response:
-`200 ok`
-```json
-[]
-```
-
-
-### Get one Board: one saved Board
-As a client, I want to be able to make a `GET` request to `/boards/1` when there is at least one saved board and get this response:
-
-`200 ok`
-```json
-{
-    "board": {
-        "board_id": 1,
-        "title": "New Board for me",
-        "owner": "Spice Girls"
-    }
-}
-```
-
-### Get One Board: No matching Boards
-As a client, I want to be able to make a `GET` request to `/boards/1` when there are no matching boards and get this response:
-
-`404 Not Found`
-
-No response body.
-
-### Update Board
-As a client, I want to be able to make a `PUT` request to `/boards/1` when there is at least one saved board with this request body:
-
-```json
-{
-    "title": "New name for fancy board",
-    "owner": "Morty"
-}
-```
-
-and get this response:
-`200 ok`
-```json
-{
-    "board": {
-        "board_id": 1,
-        "title": "New name for fancy board",
-        "owner": "Morty"
-    }
-}
-```
-
-### Update Board: No matching Board
-As a client, I want to be able to make a `PUT` request to `/boards/2` when there are no matching tasks with this request body:
-
-```json
-{
-    "title": "New title for board",
-    "owner": "Trish"
-}
-```
-and get this response:
-`404 Not Found`
-No response body
-
-### Delete Board: Deleting a board
-
-### Delete Board: No Matching Board
+Endpoint will not let you create a board without a title or owner. It will give you an error message alerting you to this fact.
 
 ***
-Need to decide on what circumstance will we not allow a database creation to begin.
-- example 
--- when no title is provided?
--- when no owner is provided?
+### PUT --> Edit a board by ID
+- `/boards/<board_id>`
+- `https://inspo--board.herokuapp.com/boards/2`
 
-### Create a Board: Invalid Board With Missing Data **
+Example Payload body:
+```json
+{
+    "owner": "Rudy G",
+    "title": "Lumber is a board."
+}
+```
+Endpoint will not let you edit a board that doesn't exist. Will give you helpful message if the board doesn't exist.
 
-<hr />
+***
+### DEL --> Delete a board by ID
+- `/boards/<board_id>`
+- `https://inspo--board.herokuapp.com/boards/3`
 
-# Need to go through crud for Cards like I did for board above.
+Endpoint will not let you delete a board that doesn't exist. Will give you a helpful message if board doesn't exist.
 
-### Create a Card: valid card
+***
+### GET --> Get a board by ID
+- `/boards/<board_id>`
+- `https://inspo--board.herokuapp.com/boards/2`
 
-### Get Cards: Getting saved cards
+Endpoint will not let you get board that doesn't exist. Will give you helpful message if board doesn't exist.
 
-### Get Cards: No saved Cards
+***
+### GET --> Get all The Boards if any exist
+- `/boards`
+- `https://inspo--board.herokuapp.com/boards`
 
-### Get One Card: One saved Card
-
-### Get One Card: No matching Card
-
-### Update Card:
-
-### Update Card: No matching Card
-
-### Delete Card: Deleting a Card
-
-### Delete Card: No matching Card
-
-### Create a Card: Invalid Card with missing data
+If no boards exist then it will return an empty array.
 
 
+# Handling Cards
+### Post --> creating new card for a particular board.
+- `boards/<board_id>/cards`
+- `https://inspo--board.herokuapp.com/boards/2/cards`
+
+Example Payload body:
+```json
+{
+    "message": "here is a lovely quote for you to post"
+}
+```
+***
+### GET --> Get All Cards associated with a particular board.
+- `/boards/<board_id>/cards`
+- `https://inspo--board.herokuapp.com/boards/2/cards`
+
+***
+### Get --> Get card by ID
+- `/cards/<card_id>`
+- `https://inspo--board.herokuapp.com/cards/9`
+***
+
+### DEL --> Delete a card ny ID
+- `/cards/<card_id>`
+- `https://inspo--board.herokuapp.com/cards/9`
+***
+### PUT --> Edit card by ID
+- `/cards/<card_id>`
+- `http://127.0.0.1:5000/cards/8`
+
+```json
+{
+    "message": "editing it one more time"
+}
+```
+
+# Handle Likes
+### Put --> Increase Likes Count by 1
+- `/cards/<card_id>/like`
+- `https://inspo--board.herokuapp.com/cards/9/like`
