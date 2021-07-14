@@ -10,6 +10,9 @@ load_dotenv()
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
 cards_bp = Blueprint("cards", __name__, url_prefix="/cards")
 
+# ----------------- Board Endpoints ----------------- #
+# Get all boards --> done
+# Create a board --> done
 @boards_bp.route("", methods=["GET", "POST"])
 def handle_boards():
 
@@ -52,15 +55,16 @@ def handle_boards():
             }
         }, 201)
 
-# Deleting a single board instance
-@boards_bp.route("/<board_id>", methods=["DELETE"])
+# Delete a board by ID --> done
+# Get a board by ID --> done
+# Edit a board by ID --> done
+@boards_bp.route("/<board_id>", methods=["DELETE", "GET", "PUT"])
 def handle_board(board_id):
     board = Board.query.get(board_id)
-
-    if request.method == "DELETE":
-        if board is None:
+    if board is None:
             return make_response(f"Board {board_id} not found. ", 404)
 
+    if request.method == "DELETE":
         db.session.delete(board)
         db.session.commit()
 
@@ -71,7 +75,29 @@ def handle_board(board_id):
                 }
         )
 
-# Getting board and associated cards or creating cards and associating a board
+    elif request.method == "GET":
+        return {
+            "id": board.board_id,
+            "title": board.title,
+            "owner": board.owner
+        }
+
+    elif request.method == "PUT":
+        form_data = request.get_json()
+        board.title = form_data["title"]
+        board.owner = form_data["owner"]
+
+        db.session.commit()
+
+        return make_response({
+            "board": {
+                "id": board.board_id,
+                "title": board.title,
+                "owner": board.owner,
+            }
+        })
+
+
 @boards_bp.route("/<board_id>/cards", methods=["GET", "POST"])
 def handle_board_cards(board_id):
     if request.method == "POST":
