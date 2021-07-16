@@ -5,7 +5,6 @@ from app.models.card import Card
 import os
 from dotenv import load_dotenv
 import requests
-# import slack_sdk
 from slack_sdk.errors import SlackApiError
 
 boards_bp = Blueprint("boards", __name__, url_prefix="/boards")
@@ -117,7 +116,8 @@ def handle_cards(board_id):
         cards_response = []
         for card in cards:
             cards_response.append({
-                "message": card.message
+                "message": card.message,
+                "likes_count": card.likes_count,
             })
 
         return make_response(
@@ -140,7 +140,8 @@ def handle_cards(board_id):
         return {
             "card": {
                 "id": new_card.card_id,
-                "message": new_card.message
+                "message": new_card.message,
+                "likes_count": new_card.likes_count,
             }
         }, 201
 
