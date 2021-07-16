@@ -1,0 +1,36 @@
+2021-07-13 06:07:34.941 PDT [96833] LOG:  starting PostgreSQL 13.3 on x86_64-apple-darwin20.4.0, compiled by Apple clang version 12.0.5 (clang-1205.0.22.9), 64-bit
+2021-07-13 06:07:34.942 PDT [96833] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2021-07-13 06:07:34.942 PDT [96833] LOG:  listening on IPv6 address "::1", port 5432
+2021-07-13 06:07:34.943 PDT [96833] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2021-07-13 06:07:34.947 PDT [96834] LOG:  database system was shut down at 2021-07-13 06:07:20 PDT
+2021-07-13 06:07:34.949 PDT [96833] LOG:  database system is ready to accept connections
+2021-07-13 06:07:46.358 PDT [96866] FATAL:  role "postgres" does not exist
+2021-07-13 06:08:40.481 PDT [96996] FATAL:  database "du" does not exist
+2021-07-13 06:09:23.143 PDT [97350] FATAL:  role "postgres" does not exist
+2021-07-13 06:10:40.468 PDT [97924] FATAL:  role "postgres" does not exist
+2021-07-13 06:13:27.223 PDT [98323] FATAL:  role "postgres" does not exist
+2021-07-13 06:19:38.338 PDT [310] FATAL:  role "postgres" does not exist
+2021-07-13 06:23:44.026 PDT [1012] FATAL:  role "postgres" does not exist
+2021-07-13 06:23:54.376 PDT [1035] FATAL:  database "Xtina206" does not exist
+2021-07-13 06:28:43.565 PDT [1965] FATAL:  role "postgres" does not exist
+2021-07-13 06:32:11.170 PDT [2642] FATAL:  role "xtina" is not permitted to log in
+2021-07-13 06:32:22.481 PDT [2666] FATAL:  database "Xtina206" does not exist
+2021-07-13 06:33:39.135 PDT [2911] FATAL:  role "postgres" does not exist
+2021-07-13 06:33:50.071 PDT [2934] FATAL:  database "Xtina206" does not exist
+2021-07-13 06:33:59.221 PDT [2957] FATAL:  database "Xtina206" does not exist
+2021-07-13 06:34:16.502 PDT [3001] FATAL:  role "inspiration_board_development" does not exist
+2021-07-13 06:34:26.178 PDT [3025] FATAL:  role "postgres" does not exist
+2021-07-13 06:34:35.779 PDT [3049] FATAL:  database "Xtina206" does not exist
+2021-07-13 06:34:57.264 PDT [3095] FATAL:  role "postgres" does not exist
+2021-07-13 07:30:28.182 PDT [12165] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 08:49:51.995 PDT [64205] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 08:53:28.067 PDT [64292] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:05:12.011 PDT [64978] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:06:21.462 PDT [66682] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:07:36.303 PDT [66847] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:08:03.094 PDT [67041] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:09:05.336 PDT [67110] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:09:13.806 PDT [67265] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:11:00.888 PDT [67474] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:14:08.700 PDT [68281] LOG:  unexpected EOF on client connection with an open transaction
+2021-07-14 09:18:04.828 PDT [68607] LOG:  unexpected EOF on client connection with an open transaction
