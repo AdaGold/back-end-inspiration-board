@@ -12,6 +12,9 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+
+    app.url_map.strict_slashes = False
+    
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -26,6 +29,8 @@ def create_app():
     migrate.init_app(app, db)
 
     # Register Blueprints here
+    from .routes import board_bp
+    app.register_blueprint(board_bp)
     # from .routes import example_bp
     # app.register_blueprint(example_bp)
 
