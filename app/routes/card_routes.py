@@ -22,33 +22,20 @@ def get_card_from_id(card_id):
    else:
         abort(make_response({"description": "Card not found"}, 404))
 
-# @card_bp.route("", methods =["POST"])
-# def add_card ():
-#     request_body = request.get_json()
-#     if "message" not in request_body:
-#         return make_response({"details":"Invalid data"}, 400)
-#     new_card = Card(
-#         message=request_body["message"],
-#         likes_count=0,
-#     )
 
-#     db.session.add(new_card)
-#     db.session.commit()
-
-
-@card_bp.route("/<card_id>/like", methods =["PUT"])
+@card_bp.route("/<card_id>/like", methods =["PUT", "PATCH"])
 def update_card_likes( card_id):
-    request_body = request.get_json()
+    # request_body = request.get_json()
     card = get_card_from_id(card_id)
-    if "likes_count" not in request_body:
-        return jsonify("Incomplete data"), 400
+    # if "likes_count" not in request_body:
+    #     return jsonify("Incomplete data"), 400
 
-    card.likes_count = request_body["likes_count"]
-
+    # card.likes_count = request_body["likes_count"]
+    card.likes_count = card.likes_count + 1
    
     db.session.commit()
 
-    return make_response(f"Card with id {card.card_id} has been updated", 200)
+    return make_response(f"Card with id {card.card_id} has been updated. It has {card.likes_count} likes.", 200)
 
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
