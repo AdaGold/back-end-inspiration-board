@@ -63,35 +63,37 @@ def delete_board(id):
 # POST { title: "sbsdgsd" } to localhost:5000/board/1/card
 # POST { title: "title 2" } to localhost:5000/board/1/card3
 
-@board_bp.route("/<board_id>/card", methods=["POST"])
-def post_cards_of_board (board_id):
+@board_bp.route("/<id>/card", methods=["POST"])
+def post_cards_of_board (id):
     request_body = request.get_json()
-    board = get_board_from_id(board_id)
+    # board = get_board_from_id(id)
     if "message" not in request_body:
         return make_response({"details":"Invalid data"}, 400)
     new_card = Card(
         message=request_body["message"],
         likes_count=0,
+        # board_id=request_body["id"]
+        board_id=id
     )
 
-    board.cards.append(new_card)
+    # board.cards.append(new_card)
 
     db.session.add(new_card)
     
     db.session.commit()
 
-    return make_response(jsonify({"board_id":board_id, "board_cards":board.cards}))
+    return make_response(jsonify({"board_id":new_card.board_id, "message":new_card.message}))
+    # return make_response(jsonify({"board_id":id, "board_cards":board.cards}))
 
 @board_bp.route("/<board_id>/cards", methods=["GET"])  # get cards belong to one board
 def get_cards_of_one_board(board_id):
     board = get_board_from_id(board_id)
     board_cards = [card.to_dict() for card in board.cards]
-
-    # return jsonify({
-    #                "id": board.board_id,
-    #                "title" : board.title,
-    #                "cards": board_cards
-    # })
+    return jsonify({
+                   "id": board.board_id,
+                   "title" : board.title,
+                   "cards": board_cards
+    })
     return make_response(jsonify({
                    board_cards
     }))
