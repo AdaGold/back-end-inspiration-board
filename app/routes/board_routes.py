@@ -83,7 +83,7 @@ def post_cards_of_board (id):
     
     db.session.commit()
 
-    return make_response(jsonify({"board_id":new_card.board_id, "message":new_card.message}))
+    return make_response(jsonify({"board_id":new_card.board_id, "card_id":new_card.card_id,"message":new_card.message}))
     # return make_response(jsonify({"board_id":id, "board_cards":board.cards}))
 
 @board_bp.route("/<board_id>/cards", methods=["GET"])  # get cards belong to one board
