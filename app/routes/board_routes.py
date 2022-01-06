@@ -45,8 +45,9 @@ def create_board():
 
     db.session.add(new_board)
     db.session.commit()
+    
 
-    return make_response(f"Board called {new_board.title} has been created", 200)
+    return make_response({"board_id": new_board.board_id}, 200)
 
 
 @board_bp.route("/<id>", methods=["DELETE"])
