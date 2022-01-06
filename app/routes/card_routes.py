@@ -23,7 +23,7 @@ def get_card_from_id(card_id):
         abort(make_response({"description": "Card not found"}, 404))
 
 
-@card_bp.route("/<card_id>/like", methods =["PUT", "PATCH"])
+@card_bp.route("/<card_id>/like", methods =["PUT"])
 def update_card_likes( card_id):
     # request_body = request.get_json()
     card = get_card_from_id(card_id)
