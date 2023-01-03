@@ -1,5 +1,7 @@
 import pytest
 from app import create_app
+from app.models.board import Board
+from app.models.card import Card
 from app import db
 
 
