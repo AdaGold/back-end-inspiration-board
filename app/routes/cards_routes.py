@@ -42,3 +42,14 @@ def get_one_card(card_id):
     card = Card.query.get(card_id)
 
     return jsonify({"card": card.create_dict()}), 200
+
+#---------------------DELETE-------------------------------
+
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_one_card(card_id):
+    card = Card.query.get(card_id)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return jsonify({"details": f"Card id: {card_id} was deleted"}), 200
