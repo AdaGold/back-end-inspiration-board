@@ -22,3 +22,19 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+# @pytest.fixture
+# def board_item(app):
+#     new_board = Board(
+#         title="Entry trial", owner="Alaere")
+#     db.session.add(new_board)
+#     db.session.commit()
+
+@pytest.fixture
+def select_second_board_item(app):
+    db.session.add_all([
+        Board(board_id=1, title="Entry trial 1", owner="Alaere"),
+        Board(board_id=2, title="Entry trial 2", owner="Mia"),
+        Board(board_id=3, title="Entry trial 3", owner="Anika")
+    ])
+    db.session.commit()

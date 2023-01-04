@@ -5,6 +5,14 @@ class Board(db.Model):
     owner = db.Column(db.String)
     title = db.Column(db.String)
 
-    def create_board(board_data):
-        return Board(owner=board_data["owner"], title=board_data["title"])
+
+    def to_dict(self):
+        return {
+            "board_id" : self.board_id,
+            "owner": self.owner,
+            "title": self.title,
+        }
+    @classmethod
+    def create_board(cls, board_data):
+        return cls(owner=board_data["owner"], title=board_data["title"])
 
