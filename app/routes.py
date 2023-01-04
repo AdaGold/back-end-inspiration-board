@@ -5,7 +5,7 @@ from app.models.board import Board
 
 board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 
-card_bp = Blueprint('cards', __name__, url_prefix="/cards")
+# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 def validate_model(cls, model_id):
     try:
@@ -54,21 +54,26 @@ def create_board():
     return make_response({"boards": new_board.to_dict()}, 201)
 
 @board_bp.route("/<board_id>/cards", methods=["GET"])
-def get_all_cards(board_id):
-    pass
+def get_cards_of_one_board(board_id):
 
+    board = validate_model(Board, board_id)
 
-# @card_bp.route("/cards/<card_id>", methods=["POST"])
-# def create_new_card(card_id):
-#     pass
+    cards_list = []
 
-# @card_bp.route("/cards", methods=["GET"])
-# def get_all_cards():
-#     pass
+    for card in board.cards: 
+        card_dict = card.to_dict()
+        card_dict["board_id"] = card.board_id
+        cards_list.append(card_dict)
 
-# @card_bp.route("/<boards_id>/card/<card_id>", methods=["PATCH"])
-# def update_likes_in_card(board_id, card_id):
-#     pass
+    return_body = {
+        "board_id": board.board_id,
+        "owner": board.owner,
+        "title": board.title,
+        "cards": cards_list
+    }
+
+    return jsonify(return_body), 200
+
 
 
 
