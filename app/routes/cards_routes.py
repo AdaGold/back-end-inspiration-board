@@ -22,7 +22,7 @@ def add_card():
     db.session.commit()
 
     print(new_card)
-    return make_response(f"Card {new_card.message} succesfully created"), 201
+    return jsonify({"message": new_card.create_dict()}), 201
 
 #----------------------GET--------------------------------
 
@@ -34,11 +34,11 @@ def get_all_cards():
     response = []
 
     for card in cards:
-        response.append(card)
-    return make_response({response}), 200
+        response.append(card.create_dict())
+    return jsonify(response), 200
 
 @card_bp.route("/<card_id>", methods=["GET"])
 def get_one_card(card_id):
     card = Card.query.get(card_id)
 
-    return jsonify(card), 200
+    return jsonify({"card": card.create_dict()}), 200
