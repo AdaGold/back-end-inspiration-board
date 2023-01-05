@@ -54,3 +54,11 @@ def delete_one_card(card_id):
     db.session.commit()
 
     return jsonify({"details": f"Card id: {card_id} was deleted"}), 200
+
+#---------------------PATCH---------------------------------
+@card_bp.route("/<card_id>", methods=["PATCH"])
+def update_likes(card_id):
+    card = get_one_obj_or_abort(Card, card_id)
+    card.likes_count += 1
+
+    db.session.commit()
