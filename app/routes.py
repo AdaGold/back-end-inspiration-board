@@ -90,20 +90,6 @@ def delete_board_by_id(board_id):
     return make_response({"details": f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
 
 
-def post_to_slack(message):
-    url = "https://slack.com/api/chat.postMessage"
-
-    json = {
-        "channel": "C04FZS8P2BH",
-        "text": message
-    }
-
-    header_key = os.environ.get("authorization")
-
-    response = requests.post(url=url, json=json,
-    headers={"Authorization": header_key})
-
-
 # @board_bp.route("/<board_id>/cards", methods=["GET"])
 # def get_all_cards(board_id):
 #     pass
