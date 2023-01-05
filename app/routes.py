@@ -1,12 +1,10 @@
 from flask import Blueprint, request, jsonify, make_response, abort
-from flask_sqlalchemy import SQLAlchemy
 from app import db
 from app.models.board import Board
 
 board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 
 card_bp = Blueprint('cards', __name__, url_prefix="/cards")
-
 def validate_model(cls, model_id):
     try:
         model_id = int(model_id)
@@ -41,8 +39,6 @@ def get_board_by_id(board_id):
 def create_board():
     request_body = request.get_json()
 
-    print(request_body)
-
     if not "owner" in request_body or not "title" in request_body:
         abort(make_response({"status message": "Invalid data"}, 400))
 
@@ -53,9 +49,36 @@ def create_board():
     
     return make_response({"boards": new_board.to_dict()}, 201)
 
-@board_bp.route("/<board_id>/cards", methods=["GET"])
-def get_all_cards(board_id):
+
+@board_bp.route("", methods=["DELETE"])
+def delete_all_boards():
+    
+    boards = Board.query.all()
+    for board in boards:
+        db.session.delete(board)
+    db.session.commit()
+
+    return make_response({"details": f"Boards successfully deleted"}, 200)
+
+
+@board_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board_by_id(board_id):
+
+    board = validate_model(Board, board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return make_response({"details": f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
+
+
+def post_to_slack():
     pass
+
+
+# @board_bp.route("/<board_id>/cards", methods=["GET"])
+# def get_all_cards(board_id):
+#     pass
 
 
 # @card_bp.route("/cards/<card_id>", methods=["POST"])

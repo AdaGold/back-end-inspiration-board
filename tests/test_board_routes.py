@@ -13,11 +13,22 @@ def test_get_boards_returns_empty_list(client):
 
 # Write test to get all of the items on the board
 @pytest.mark.skip(reason="incomplete")
-def test_get_all_boards(client):
-    pass
+def test_get_all_boards(client, three_board_items):
+    # Act
+    response = client.get("/boards")
+    response_body = response.get_json()
+
+    # Assert 
+    assert response.status_code == 200
+    assert "boards" in response_body
+    # assert response_body == {
+    #     "boards" : {
+
+    #     }
+    # }
 
 # @pytest.mark.skip(reason="incomplete")
-def test_get_one_board(client, select_second_board_item):
+def test_get_one_board(client, three_board_items):
     # Act 
     response = client.get("/boards/2")
     response_body = response.get_json()
@@ -51,13 +62,37 @@ def test_post_message_on_board(client):
             "owner": "Alaere",
         }
     }
-    new_board = Board.query.get(1)
-    assert new_board
+    # assert response_body == "New board successfully created"
+
+# @pytest.mark.skip(reason="incomplete")
+def test_delete_all_boards(client, three_board_items):
+    # Act
+    response = client.delete("/boards")
+    response_body = response.get_json()
+
+    # Assert 
+    assert response.status_code == 200
+    assert Board.query.all() == []
+    assert response_body == {"details": "Boards successfully deleted"}
 
 
-@pytest.mark.skip(reason="incomplete")
-def test_delete_all_boards(client):
-    pass
+def test_delete_board_by_id(client, three_board_items):
+    # Act 
+    response = client.delete("/boards/1")
+    response_body = response.get_json()
+
+    # Assert 
+    assert response.status_code == 200
+    assert 'details' in response_body
+    assert response_body == {
+        "details": 'Board 1 "Entry trial 1" successfully deleted'
+    }
+    assert Board.query.get(1) == None
+
+# @pytest.mark.skip(reason="incomplete")
+
+
+
 
 
 
