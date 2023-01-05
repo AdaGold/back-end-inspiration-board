@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from app import db
 from app.models.card import Card
+from .helper_functions import get_one_obj_or_abort
 import os
 
 card_bp = Blueprint("card_bp", __name__, url_prefix="/cards")
@@ -39,7 +40,7 @@ def get_all_cards():
 
 @card_bp.route("/<card_id>", methods=["GET"])
 def get_one_card(card_id):
-    card = Card.query.get(card_id)
+    card = get_one_obj_or_abort(Card, card_id)
 
     return jsonify({"card": card.create_dict()}), 200
 
@@ -47,7 +48,7 @@ def get_one_card(card_id):
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_one_card(card_id):
-    card = Card.query.get(card_id)
+    card = get_one_obj_or_abort(Card, card_id)
 
     db.session.delete(card)
     db.session.commit()
