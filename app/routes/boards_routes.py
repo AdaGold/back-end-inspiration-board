@@ -24,3 +24,19 @@ def add_board():
     return jsonify({"board": f"{new_board.title} created"}), 201
 
 #--------------------------------GET---------------------------------
+@board_bp.route("", methods=["GET"])
+def get_all_boards():
+
+    boards = Board.query.all()
+
+    response = []
+
+    for board in boards:
+        response.append(board.create_board_dict())
+    return jsonify(response), 200
+
+@board_bp.route("/<board_id>", methods=["GET"])
+def get_one_board(board_id):
+    board = get_one_obj_or_abort(Board, board_id)
+
+    return jsonify({"board": board.create_board_dict()}), 200
