@@ -45,7 +45,7 @@ def delete_card(card_id):
 
     return make_response({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200
 
-@card_bp.route("<card_id>", methods=["PATCH"])
+@card_bp.route("/<card_id>", methods=["PATCH"])
 def update_likes_in_card(card_id):
     card = validate_model(Card, card_id)
 
