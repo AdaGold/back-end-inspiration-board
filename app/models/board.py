@@ -8,12 +8,15 @@ class Board(db.Model):
 
 
     def to_dict(self):
-        return {
+        board_dict = {
             "board_id" : self.board_id,
             "owner": self.owner,
             "title": self.title,
+            "cards": [card.to_dict() for card in self.cards]
         }
-        
+
+        return board_dict
+
     @classmethod
     def create_board(cls, board_data):
         return cls(owner=board_data["owner"], title=board_data["title"])

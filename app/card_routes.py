@@ -8,7 +8,7 @@ from app.routes import validate_model
 card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 @card_bp.route("", methods=["POST"])
-def create_new_card(card_id):
+def create_new_card():
     request_body = request.get_json()
 
     if "likes" not in request_body or "message" not in request_body:
@@ -44,6 +44,7 @@ def delete_card(card_id):
     db.session.commit()
 
     return make_response({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200
+    
 
 # @card_bp.route("/<boards_id>/card/<card_id>", methods=["PATCH"])
 # def update_likes_in_card(board_id, card_id):

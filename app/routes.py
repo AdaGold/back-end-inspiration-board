@@ -3,10 +3,11 @@ from app import db
 import os
 import requests
 from app.models.board import Board
+from app.models.card import Card
 
 board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 
-# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
+card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 def validate_model(cls, model_id):
     try:
@@ -26,7 +27,6 @@ def validate_model(cls, model_id):
 def get_all_boards():
 
     boards = Board.query.all()
-
     all_boards = [board.to_dict() for board in boards]
 
     return jsonify(all_boards)
@@ -59,12 +59,12 @@ def create_board():
     if not "owner" in request_body or not "title" in request_body:
         abort(make_response({"status message": "Invalid data"}, 400))
 
-    new_board = Board(owner=request_body["owner"],title=request_body["title"])
+    new_board = Board.create_board(request_body)
 
     db.session.add(new_board)
     db.session.commit()
     
-    post_to_slack(f"New board {new_board.title} has been created")
+    # post_to_slack(f"New board {new_board.title} has been created")
 
     return make_response({"boards": new_board.to_dict()}, 201)
 
@@ -90,37 +90,21 @@ def delete_board_by_id(board_id):
 
     return make_response({"details": f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
 
-@board_bp.route("/<board_id>/cards", methods=["GET"])
-def get_all_cards(board_id):
+@board_bp.route("/<board_id>/cards", methods=["POST"])
+def post_card_under_board(board_id):
 
     board = validate_model(Board, board_id)
+    request_body = request.get_json()
+    card_details = request_body["message"]
 
-    get_cards = Board.query.get(board)
+    card = Card(board_id=board.board_id, likes=0, message=card_details)
 
-    return make_response({"boards": get_cards.to_dict()})
+    db.session.add(card)
+    db.session.commit()
 
-# @board_bp.route("/<board_id>/cards", methods=["GET"])
-# def get_all_cards(board_id):
-#     pass
+    response = card.to_dict()
 
-    board = validate_model(Board, board_id)
-
-    cards_list = []
-
-    for card in board.cards: 
-        card_dict = card.to_dict()
-        card_dict["board_id"] = card.board_id
-        cards_list.append(card_dict)
-
-    return_body = {
-        "board_id": board.board_id,
-        "owner": board.owner,
-        "title": board.title,
-        "cards": cards_list
-    }
-
-    return jsonify(return_body), 200
-
-
+    return make_response(response, 201)
+    
 
 
