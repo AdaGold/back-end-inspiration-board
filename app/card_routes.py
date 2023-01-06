@@ -45,7 +45,16 @@ def delete_card(card_id):
 
     return make_response({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200
 
-# @card_bp.route("/<boards_id>/card/<card_id>", methods=["PATCH"])
-# def update_likes_in_card(board_id, card_id):
-#     pass
+@card_bp.route("<card_id>", methods=["PATCH"])
+def update_likes_in_card(card_id):
+    card = validate_model(Card, card_id)
+
+    request_body = request.get_json()
+
+    card.likes += 1
+
+    db.session.commit()
+
+    return make_response(jsonify(f"Book #{card.card_id} successfully updated"))
+    
 
