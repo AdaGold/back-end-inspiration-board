@@ -91,7 +91,7 @@ def delete_board_by_id(board_id):
     return make_response({"details": f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
 
 @board_bp.route("/<board_id>/cards", methods=["POST"])
-def get_cards_under_board(board_id):
+def post_cards_under_board(board_id):
 
     board = validate_model(Board, board_id)
     request_body = request.get_json()
@@ -105,7 +105,7 @@ def get_cards_under_board(board_id):
     return make_response({"board_id": board.board_id, "cards": card.to_dict()}, 201)
 
 @board_bp.route("/<board_id>/cards", methods=["GET"])
-def post_card_under_board(board_id):
+def get_card_under_board(board_id):
 
     board = validate_model(Board, board_id)
     cards = Card.query.filter_by(board_id=board.board_id).all()
