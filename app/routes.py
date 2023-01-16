@@ -57,7 +57,7 @@ def create_board():
     request_body = request.get_json()
 
     if not "owner" in request_body or not "title" in request_body:
-        abort(make_response({"status message": "Invalid data"}, 400))
+        abort(make_response({"details": "Invalid data"}, 400))
 
     new_board = Board.create_board(request_body)
 
@@ -91,7 +91,7 @@ def delete_board_by_id(board_id):
     return make_response({"details": f'Board {board.board_id} "{board.title}" successfully deleted'}, 200)
 
 @board_bp.route("/<board_id>/cards", methods=["POST"])
-def post_card_under_board(board_id):
+def get_cards_under_board(board_id):
 
     board = validate_model(Board, board_id)
     request_body = request.get_json()
@@ -102,9 +102,31 @@ def post_card_under_board(board_id):
     db.session.add(card)
     db.session.commit()
 
-    response = card.to_dict()
+    return make_response({"board_id": board.board_id, "cards": card.to_dict()}, 201)
 
-    return make_response(response, 201)
-    
+@board_bp.route("/<board_id>/cards", methods=["GET"])
+def post_card_under_board(board_id):
+
+    board = validate_model(Board, board_id)
+    cards = Card.query.filter_by(board_id=board.board_id).all()
+    card_list = [card.to_dict() for card in cards]
+
+    return make_response({"board_id": board.board_id, "cards": card_list}, 200)
+
+@board_bp.route("/<board_id>/cards", methods=["DELETE"])
+def delete_all_cards_from_board(board_id):
+    board = validate_model(Board, board_id)
+    cards = Card.query.filter_by(board_id=board.board_id).all()
+    print(cards)
+
+    if not cards:
+        return make_response("No cards found", 404)
+    else:
+        for card in cards:
+            db.session.delete(card)
+        db.session.commit()
+
+    return make_response(f"All cards from board {board_id} have been deleted", 200)
+
 
 

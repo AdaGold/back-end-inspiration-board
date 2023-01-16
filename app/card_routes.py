@@ -27,6 +27,7 @@ def get_all_cards():
     cards = Card.query.all()
 
     cards_response = [card.to_dict() for card in cards]
+    print(cards_response)
 
     return jsonify(cards_response), 200
 
@@ -52,10 +53,12 @@ def update_likes_in_card(card_id):
 
     request_body = request.get_json()
 
-    card.likes += 1
+    card.likes = request_body['likes'] + 1
 
     db.session.commit()
 
-    return make_response(jsonify(f"Book #{card.card_id} successfully updated"))
+    return make_response(jsonify({"card":card.to_dict()}), 200)
+
+    # return make_response(jsonify(f"Card #{card.card_id} successfully updated"))
     
 

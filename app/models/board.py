@@ -12,8 +12,9 @@ class Board(db.Model):
             "board_id" : self.board_id,
             "owner": self.owner,
             "title": self.title,
-            "cards": [card.to_dict() for card in self.cards]
         }
+        if self.cards:
+            board_dict["cards"] = [card.to_dict() for card in self.cards]
 
         return board_dict
 
