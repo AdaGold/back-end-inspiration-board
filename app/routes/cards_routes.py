@@ -15,6 +15,9 @@ def add_card():
     if "message" not in request_body:
         return jsonify({"details": "Must have a message"}), 400
 
+    if len(request_body["message"]) > 40:
+        return jsonify({"details": "Message must be 40 characters or less"}), 400
+
     new_card = Card(
         message = request_body["message"]
     )
