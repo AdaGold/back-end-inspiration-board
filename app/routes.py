@@ -7,7 +7,7 @@ from app.models.card import Card
 
 board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 
-card_bp = Blueprint('cards', __name__, url_prefix="/cards")
+# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 def validate_model(cls, model_id):
     try:

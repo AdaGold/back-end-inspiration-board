@@ -3,9 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from app import db
 from app.models.board import Board
 from app.models.card import Card
-from app.routes import validate_model, card_bp
+from app.routes import validate_model
 
-# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
+card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 @card_bp.route("", methods=["POST"])
 def create_new_card():
