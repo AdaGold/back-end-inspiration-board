@@ -29,8 +29,8 @@ def create_app(config=None):
 
     # Register Blueprints here
     # from .routes import example_bp
-    from .routes import board_bp
-    from .card_routes import card_bp
+    from .routes import board_bp, card_bp
+    # from .card_routes import card_bp
     app.register_blueprint(board_bp)
     app.register_blueprint(card_bp)
 

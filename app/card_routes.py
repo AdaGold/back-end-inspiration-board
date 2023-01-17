@@ -3,9 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from app import db
 from app.models.board import Board
 from app.models.card import Card
-from app.routes import validate_model
+from app.routes import validate_model, card_bp
 
-card_bp = Blueprint('cards', __name__, url_prefix="/cards")
+# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 @card_bp.route("", methods=["POST"])
 def create_new_card():
@@ -27,15 +27,24 @@ def get_all_cards():
     cards = Card.query.all()
 
     cards_response = [card.to_dict() for card in cards]
-    print(cards_response)
+    # print(cards_response)
 
     return jsonify(cards_response), 200
+
+@card_bp.route("", methods=["DELETE"])
+def delet_all_cards():
+    cards = Card.query.all()
+
+    for card in cards:
+        db.session.delete(card)
+    db.session.commit()
+
+    return make_response({"details": "Cards successfully deleted"}), 200
 
 @card_bp.route("/<card_id>", methods=["GET"])
 def get_one_card(card_id):
     card = validate_model(Card, card_id)
     return make_response(jsonify({"card":card.to_dict()}), 200)
-
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card(card_id):
