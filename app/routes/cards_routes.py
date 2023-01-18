@@ -63,3 +63,4 @@ def update_likes(card_id):
     card.likes_count += 1
 
     db.session.commit()
+    return jsonify({"liked": card.create_dict()})
