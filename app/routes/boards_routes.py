@@ -30,10 +30,8 @@ def get_all_boards():
 
     boards = Board.query.all()
 
-    response = []
+    response = [board.create_board_dict() for board in boards]
 
-    for board in boards:
-        response.append(board.create_board_dict())
     return jsonify(response), 200
 
 @board_bp.route("/<board_id>", methods=["GET"])

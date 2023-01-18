@@ -35,10 +35,10 @@ def get_all_cards():
 
     cards = Card.query.all()
 
-    response = []
+    response = [card.create_dict() for card in cards]
 
-    for card in cards:
-        response.append(card.create_dict())
+    # for card in cards:
+    #     response.append(card.create_dict())
     return jsonify(response), 200
 
 @card_bp.route("/<card_id>", methods=["GET"])
