@@ -56,19 +56,19 @@ def delete_card(card_id):
     return make_response({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200
     
 
-# @card_bp.route("/<card_id>", methods=["PATCH"])
-# def update_likes_in_card(card_id):
-#     card = validate_model(Card, card_id)
+@card_bp.route("/<card_id>", methods=["PATCH"])
+def update_likes_in_card_func(card_id):
+    card = validate_model(Card, card_id)
 
-#     if card is None:
-#         return make_response(jsonify({"error": "Card not found"}), 400)
+    if card is None:
+        return make_response(jsonify({"error": "Card not found"}), 400)
 
-#     card.likes += 1
+    card.likes += 1
 
-#     db.session.commit()
+    db.session.commit()
 
-#     return make_response(jsonify({"card":card.to_dict()}), 200)
+    return make_response(jsonify({"card":card.to_dict()}), 200)
 
-    # return make_response(jsonify(f"Card #{card.card_id} successfully updated"))
+    return make_response(jsonify(f"Card #{card.card_id} successfully updated"))
     
 
