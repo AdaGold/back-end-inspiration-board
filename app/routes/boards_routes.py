@@ -74,3 +74,14 @@ def post_card_to_board(board_id):
         db.session.commit()
     
     return jsonify({"Card with card id": request_body["card_ids"], "Linked to board id": board.board_id}), 200
+
+#---------------------DELETE-------------------------------
+
+@board_bp.route("/<board_id>", methods=["DELETE"])
+def delete_one_board(board_id):
+    board = get_one_obj_or_abort(Board, board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"details": f"Board id: {board_id} was deleted"}), 200
