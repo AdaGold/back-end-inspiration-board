@@ -7,7 +7,6 @@ from app.models.card import Card
 
 board_bp = Blueprint('boards', __name__, url_prefix="/boards")
 
-# card_bp = Blueprint('cards', __name__, url_prefix="/cards")
 
 def validate_model(cls, model_id):
     try:
@@ -117,7 +116,7 @@ def get_card_under_board(board_id):
 def delete_all_cards_from_board(board_id):
     board = validate_model(Board, board_id)
     cards = Card.query.filter_by(board_id=board.board_id).all()
-    print(cards)
+
 
     if not cards:
         return make_response("No cards found", 404)
@@ -128,5 +127,32 @@ def delete_all_cards_from_board(board_id):
 
     return make_response(f"All cards from board {board_id} have been deleted", 200)
 
+
+@board_bp.route("/<board_id>/cards/<card_id>", methods=["DELETE"])
+def delete_card(board_id, card_id):
+    board = validate_model(Board, board_id)
+    if board is None:
+        return make_response(jsonify({"error": "Board not found"}), 404)
+        
+    card = validate_model(Card, card_id)
+    if card not in board.cards:
+        return make_response(jsonify({"error": "Card not found in this board"}), 404)
+
+    db.session.delete(card)
+    db.session.commit()
+    return make_response(jsonify({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200)
+
+@board_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
+def update_likes_in_card(board_id, card_id):
+    card = validate_model(Card, card_id)
+
+    if card is None:
+        return make_response(jsonify({"error": "Card not found"}), 400)
+
+    card.likes += 1
+
+    db.session.commit()
+
+    return make_response(jsonify({"card":card.to_dict()}), 200)
 
 
