@@ -140,23 +140,20 @@ def delete_card(board_id, card_id):
 
     db.session.delete(card)
     db.session.commit()
+    
+    return make_response(jsonify({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200)
 
-    resp = make_response(jsonify({"details": f"Card {card_id} \"{card.message}\" successfully deleted"}), 200)
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    resp.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return resp
-@board_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
-def update_likes_in_card(board_id, card_id):
-    card = validate_model(Card, card_id)
+# @board_bp.route("/<board_id>/cards/<card_id>", methods=["PATCH"])
+# def update_likes_in_card(board_id, card_id):
+#     card = validate_model(Card, card_id)
 
-    if card is None:
-        return make_response(jsonify({"error": "Card not found"}), 400)
+#     if card is None:
+#         return make_response(jsonify({"error": "Card not found"}), 400)
 
-    card.likes += 1
+#     card.likes += 1
 
-    db.session.commit()
+#     db.session.commit()
 
-    return make_response(jsonify({"card":card.to_dict()}), 200)
+#     return make_response(jsonify({"card":card.to_dict()}), 200)
 
 

@@ -60,9 +60,10 @@ def delete_card(card_id):
 def update_likes_in_card(card_id):
     card = validate_model(Card, card_id)
 
-    request_body = request.get_json()
+    if card is None:
+        return make_response(jsonify({"error": "Card not found"}), 400)
 
-    card.likes = request_body['likes'] + 1
+    card.likes += 1
 
     db.session.commit()
 
