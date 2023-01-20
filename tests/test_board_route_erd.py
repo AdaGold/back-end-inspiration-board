@@ -36,17 +36,6 @@ def test_get_cards_for_specific_board_cards(client, one_card_belongs_to_one_boar
         'cards': [{'card_id': 2, 'likes': 0, 'message': 'Have a wonderful day'}]
     }
 
-# def test_delete_all_cards_from_board(client, one_card, one_board):
-#     card = one_card.likes
-#     print(card)
-#     print(one_board())
-#     # Act
-#     response = client.delete(f"/board/1/cards")
-#     assert response.status_code == 200
-#     assert f"All cards from board" in response.data
-
-#     # Check that the card has been deleted from the board
-
 
 def test_delete_all_cards_from_board(client, one_board, one_card):
     # Create a card and associate it with the board
@@ -69,3 +58,20 @@ def test_delete_all_cards_from_board_with_no_cards(client, one_board):
 
     assert response.status_code == 404
     assert b"No cards found" in response.data
+
+
+def test_update_like_count(client, one_card):
+    # Act 
+    response = client.patch("boards/1/cards/1", json={"likes": 0})
+    response_body = response.get_json()
+    # Assert 
+    card = Card.query.get(1)
+    assert response.status_code == 200
+    assert response_body == { 'card': {
+        "card_id": 1,
+        "likes": 1,
+        "message": "Have a wonderful day"
+        }
+    }
+    assert card.likes == 1
+

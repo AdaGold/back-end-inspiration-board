@@ -126,7 +126,7 @@ def test_delete_board_by_id(client, three_board_items):
     }
     assert Board.query.get(1) == None
 
-# @pytest.mark.skip(reason="incomplete")
+
 
 
 

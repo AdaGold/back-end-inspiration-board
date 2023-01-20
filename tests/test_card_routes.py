@@ -84,17 +84,3 @@ def test_delete_card_not_found(client):
     assert response.status_code == 404
     assert Card.query.all() == []
 
-def test_update_like_count(client, one_card):
-    # Act 
-    response = client.patch("cards/1", json={"likes": 0})
-    response_body = response.get_json()
-    # Assert 
-    card = Card.query.get(1)
-    assert response.status_code == 200
-    assert response_body == { 'card': {
-        "card_id": 1,
-        "likes": 1,
-        "message": "Have a wonderful day"
-        }
-    }
-    assert card.likes == 1
