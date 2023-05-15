@@ -39,9 +39,3 @@ Both files already import `db`, for convenience!
 ## `requirements.txt`
 
 This file lists the dependencies we anticipate are needed for the project.
-
-## `Procfile`
-
-This file already has the contents needed for a Heroku deployment.
-
-If the `create_app` function in `app/__init__.py` is renamed or moved, the contents of this file need to change. Otherwise, we don't anticipate this file to change.
