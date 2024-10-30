@@ -10,7 +10,7 @@ This file configures the app. We expect developers to modify this file by:
 - Initializing the app with the `SQLAlchemy` and `Migrate` instances
 - Importing and registering all blueprints
 
-Prior projects like `Solar System` and [`hello-books-api`](https://github.com/AdaGold/hello-books-api) are great resources to reference for project structure and set up needs.
+Prior projects like `Solar System`, `Flasky`, and [`hello-books-api`](https://github.com/AdaGold/hello-books-api) are great resources to reference for project structure and set up needs.
 
 Note that `create_app` also uses CORS. There is no extra action needed to be done with CORS.
 
