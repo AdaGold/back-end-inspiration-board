@@ -5,7 +5,7 @@ import requests
 import json
 import os
 
-bp=Blueprint('boards_bp', __name__, url_prefix='/boards')
+bp=Blueprint("boards_bp", __name__, url_prefix="/boards")
 
 @bp.post("")
 def create_board():
@@ -13,10 +13,11 @@ def create_board():
     try:
         new_board = Board.from_dict(request_body)
     except KeyError as e:
-        response = {"details":"Invalid request body"}
-        abort( make_response(response,400))
+        missing_key = e.args[0]
+        response = {"details": f"Invalid request body: Missing key '{missing_key}'"}
+        abort(make_response(response, 400))
 
-    db.sessiona.add(new_board)
+    db.session.add(new_board)
     db.session.commit()
 
     response = {"board": new_board.to_dict()}
