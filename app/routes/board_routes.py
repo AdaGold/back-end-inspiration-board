@@ -1,3 +1,4 @@
+
 from flask import Blueprint, abort, make_response, request, Response
 from app.models.board import Board
 from ..db import db
@@ -6,6 +7,7 @@ import json
 import os
 
 bp=Blueprint("boards_bp", __name__, url_prefix="/boards")
+
 
 @bp.post("")
 def create_board():
@@ -22,3 +24,13 @@ def create_board():
 
     response = {"board": new_board.to_dict()}
     return response, 201
+  
+  
+@boards_bp.get("")
+def get_all_boards():
+  query = db.select(Board).order_by(Board.board_id)
+  boards = db.session.scalars(query)
+
+  boards_response = [board.to_dict() for board in boards]
+  return boards_response
+
