@@ -1,10 +1,12 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column,relationship
 from ..db import db
 
 class Board(db.Model):
     board_id : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] 
     owner: Mapped[str] 
+
+    cards = relationship("Card", back_populates="board")
 
     def to_dict(self):
       
