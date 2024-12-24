@@ -36,7 +36,7 @@ def create_card(board_id):
 
 
 @bp.put("/<card_id>")
-def agree_with_card(card_id):
+def agree_with_card(board_id, card_id):
     try:
         card = validate_model(Card, card_id)
     except:
