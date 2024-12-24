@@ -1,4 +1,3 @@
-
 from flask import Blueprint, abort, make_response, request, Response
 from app.models.board import Board
 from app.models.card import Card
@@ -7,12 +6,11 @@ import requests
 import json
 import os
 
-bp=Blueprint("cards_bp", __name__, url_prefix="/boards/<board_id>/cards")
+boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 
 
-@bp.post("")
-def create_card(board_id):
-
+@boards_bp.post("")
+def create_board():
     request_body = request.get_json()
 
    
@@ -32,5 +30,12 @@ def create_card(board_id):
 
     response = {"card": new_card.to_dict()}
     return response, 201
-  
-  
+
+
+@boards_bp.get("")
+def get_all_boards():
+    query = db.select(Board).order_by(Board.board_id)
+    boards = db.session.scalars(query)
+
+    boards_response = [board.to_dict() for board in boards]
+    return boards_response
