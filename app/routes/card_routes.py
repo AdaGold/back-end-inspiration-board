@@ -34,9 +34,18 @@ def create_card(board_id):
     response = {"card": new_card.to_dict()}
     return response, 201
 
+@bp.get("")
+def get_all_cards(board_id):
+    query = db.select(Card).where(Card.board_id == board_id).order_by(Card.id)
+    cards = db.session.scalars(query)
+
+    cards_response = [card.to_dict() for card in cards]
+    return cards_response
+
+
 
 @bp.put("/<card_id>")
-def agree_with_card(board_id, card_id):
+def increase_card_likes(board_id, card_id):
     try:
         card = validate_model(Card, card_id)
     except:
@@ -48,3 +57,17 @@ def agree_with_card(board_id, card_id):
 
     response = {"card": card.to_dict()}
     return response
+
+@bp.delete("/<card_id>")
+def delete_card(board_id, card_id):
+    try:
+        card = validate_model(Card, card_id)
+    except:
+        response = {"details": f"Card {card_id} not found"}
+        abort(make_response(response, 404))
+
+    db.session.delete(card)
+    db.session.commit()
+
+    response = {"details": f"Card {card_id} deleted"}
+    return response, 204
