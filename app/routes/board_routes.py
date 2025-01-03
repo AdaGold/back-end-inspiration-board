@@ -33,12 +33,16 @@ def create_board():
 
 @boards_bp.get("")
 def get_all_boards():
-    query = db.select(Board).order_by(Board.board_id)
-    boards = db.session.scalars(query)
+    try:
+        query = db.select(Board).order_by(Board.id)
+        boards = db.session.scalars(query).all()
 
-    boards_response = [board.to_dict() for board in boards]
-    return boards_response
-
+        boards_response = [board.to_dict() for board in boards]
+        return boards_response, 200
+    except Exception as e:
+        print(f"Error fetching boards: {e}")  
+        return {"error": "An error occurred while fetching boards."}, 500
+        
 @boards_bp.get("/<board_id>")
 def get_single_board(board_id):
     board = validate_model(Board, board_id)
