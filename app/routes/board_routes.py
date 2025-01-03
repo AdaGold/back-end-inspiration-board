@@ -5,6 +5,7 @@ from ..db import db
 import requests
 import json
 import os
+from .route_utilities import validate_model
 
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 
@@ -37,3 +38,9 @@ def get_all_boards():
 
     boards_response = [board.to_dict() for board in boards]
     return boards_response
+
+@boards_bp.get("/<board_id>")
+def get_single_board(board_id):
+    board = validate_model(Board, board_id)
+
+    return board.to_dict()
