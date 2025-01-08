@@ -16,7 +16,7 @@ def create_card(board_id):
     request_body = request.get_json()
 
     try:
-        new_card = Card.from_dict(request_body)
+        new_card = Card.create_new_card(request_body["message"], board_id)
     except KeyError as e:
         missing_key = e.args[0]
         response = {"details": f"Invalid request body: Missing key '{missing_key}'"}
@@ -54,6 +54,7 @@ def create_card(board_id):
     response = {"card": new_card.to_dict()}
     return response, 201
 
+
 @bp.get("")
 def get_all_cards(board_id):
     query = db.select(Card).where(Card.board_id == board_id).order_by(Card.id)
@@ -61,7 +62,6 @@ def get_all_cards(board_id):
 
     cards_response = [card.to_dict() for card in cards]
     return cards_response
-
 
 
 @bp.put("/<card_id>")
@@ -77,6 +77,7 @@ def increase_card_likes(board_id, card_id):
 
     response = {"card": card.to_dict()}
     return response
+
 
 @bp.delete("/<card_id>")
 def delete_card(board_id, card_id):

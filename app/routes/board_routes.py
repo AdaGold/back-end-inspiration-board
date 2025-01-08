@@ -5,6 +5,7 @@ from ..db import db
 import requests
 import json
 import os
+from .route_utilities import validate_model
 
 boards_bp = Blueprint("boards_bp", __name__, url_prefix="/boards")
 
@@ -32,8 +33,39 @@ def create_board():
 
 @boards_bp.get("")
 def get_all_boards():
-    query = db.select(Board).order_by(Board.board_id)
-    boards = db.session.scalars(query)
+    try:
+        query = db.select(Board).order_by(Board.id)
+        boards = db.session.scalars(query).all()
 
-    boards_response = [board.to_dict() for board in boards]
-    return boards_response
+        boards_response = [board.to_dict() for board in boards]
+        return boards_response, 200
+    except Exception as e:
+        print(f"Error fetching boards: {e}")  
+        return {"error": "An error occurred while fetching boards."}, 500
+        
+@boards_bp.get("/<board_id>")
+def get_single_board(board_id):
+    board = validate_model(Board, board_id)
+
+    return board.to_dict()
+
+@boards_bp.put("/<board_id>")
+def update_board(board_id):
+    board = validate_model(Board, board_id)
+    request_body = request.get_json()
+
+    board.title = request_body["title"]
+    board.owner = request_body["owner"]
+
+    db.session.commit()
+
+    return Response( f'Task {board_id} "{board.title}" successfully updated' )
+
+@boards_bp.delete("/<board_id>")
+def delete_board(board_id):
+    board = validate_model(Board,board_id)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return Response(f'Task {board_id} "{board.title}" successfully deleted' )
