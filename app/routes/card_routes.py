@@ -31,6 +31,26 @@ def create_card(board_id):
     db.session.add(new_card)
     db.session.commit()
 
+    # send slack
+    url = "https://slack.com/api/chat.postMessage"
+
+    payload = json.dumps({
+        "channel": "live-love-inspire",
+        "text": f"You just added a new card: {new_card.message}!"
+    })
+    headers = {
+        'Authorization': f'Bearer {os.environ.get("SLACK_API_TOKEN")}',
+        'Content-Type': 'application/json'
+    }
+
+    slack_response = requests.request("POST", url, headers=headers, data=payload)
+    if slack_response.status_code != 200:
+        response = {
+            "message": f"failed to notify slack with status {slack_response.status_code}"}
+        abort(make_response(response, 400))
+
+
+
     response = {"card": new_card.to_dict()}
     return response, 201
 
