@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, Response
 from app.models.board import Board
 from app.models.card import Card
 from ..db import db
@@ -45,3 +45,18 @@ def get_cards_for_board(board_id):
     for card in board.cards:
         cards_list.append(card.to_dict())
     return cards_list
+
+
+@boards_bp.delete("/<board_id>")
+def delete_board(board_id):
+    board = validate_model(Board, board_id)
+    
+    cards_to_delete = Card.query.filter_by(board_id=board_id).all()
+    
+    for card in cards_to_delete:
+        db.session.delete(card)
+
+    db.session.delete(board)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
