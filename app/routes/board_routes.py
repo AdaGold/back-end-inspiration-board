@@ -12,7 +12,9 @@ def get_all_boards():
     boards = db.session.scalars(query)
     boards_response = []
     for board in boards:
-        boards_response.append(board.to_dict())
+        board_dict = board.to_dict()
+        board_dict["cards_count"] = len(board.cards)
+        boards_response.append(board_dict)
     return boards_response
 
 
